@@ -82,3 +82,15 @@ if ($xxstringsOutput) {
 } else {
     Write-Host "No strings containing '-jar' were found in DcomLaunch process memory." -ForegroundColor Red
 }
+Write-Host "Searching for PlugPlay PID..." -ForegroundColor Gray
+
+$pidPlugPlay = (Get-CimInstance -ClassName Win32_Service | Where-Object { $_.Name -eq 'PlugPlay' }).ProcessId
+
+$xxstringsOutputPlugPlay = & $xxstringsPath -p $pidPlugPlay -raw | findstr /C:"-jar"
+
+if ($xxstringsOutputPlugPlay) {
+    Write-Host "Strings found in PlugPlay process memory containing '-jar':" -ForegroundColor DarkYellow
+    $xxstringsOutputPlugPlay | ForEach-Object { Write-Host $_ }
+} else {
+    Write-Host "No strings containing '-jar' were found in PlugPlay process memory." -ForegroundColor Red
+}
